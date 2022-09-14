@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:COM_Ports" xmlns:viewmodel="clr-namespace:COM_Ports.MVVM.ViewModel"
         mc:Ignorable="d"
         Title="SerialPortsApp"
@@ -27,10 +28,16 @@
                            HorizontalAlignment="Center"
                            Background="Transparent" Foreground="Black"
                            FontSize="45" FontFamily="Oswald Medium"/>
-                <TextBox Text="{Binding sendMessage}"
+                <TextBox Text="{Binding sendMessage, UpdateSourceTrigger=PropertyChanged}"
                          Margin="10"
-                         Background="AliceBlue"
-                         FontSize="30" FontFamily="Courier new" TextWrapping="Wrap"/>
+                         Background="AliceBlue" BorderBrush="Black" BorderThickness="1"
+                         FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding SendMessageReadyCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
             </StackPanel>
         </ScrollViewer>
         <ScrollViewer Grid.Column="1">
@@ -39,10 +46,13 @@
                        HorizontalAlignment="Center"
                        Background="Transparent" Foreground="Black"
                        FontSize="45" FontFamily="Oswald Medium"/>
-                <TextBox Text="{Binding receivedMessage}" IsReadOnly="True"
-                         Margin="10"
+                <Border BorderBrush="Black" BorderThickness="1"
+                        Margin="10">
+                    <TextBlock Text="{Binding receivedMessage}"           
                          Background="AliceBlue"
-                         FontSize="30" FontFamily="Courier new" TextWrapping="Wrap"/>
+                         FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
+                    </TextBlock>
+                </Border>
             </StackPanel>
         </ScrollViewer>
         <ScrollViewer Grid.Column="2">

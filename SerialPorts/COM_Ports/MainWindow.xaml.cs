@@ -24,10 +24,5 @@ namespace COM_Ports
         {
             InitializeComponent();
         }
-
-        private void TextBox_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
-        {
-
-        }
     }
 }

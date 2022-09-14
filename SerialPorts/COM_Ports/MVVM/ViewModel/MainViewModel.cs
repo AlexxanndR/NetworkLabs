@@ -23,7 +23,7 @@ namespace COM_Ports.MVVM.ViewModel
 
         private string _receivedMessage;
 
-        public string receivedMessage
+        public String receivedMessage
         {
             get { return _receivedMessage; }
             set
@@ -43,6 +43,14 @@ namespace COM_Ports.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
+
+/*        public RelayCommand SendMessageReadyCommand
+        {
+            get
+            {
+                return new RelayCommand(changed => receivedMessage = "s");
+            }
+        }*/
 
         public MainViewModel()
         {
