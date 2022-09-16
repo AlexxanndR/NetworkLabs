@@ -9,9 +9,11 @@ namespace COM_Ports.MVVM.ViewModel
 {
     internal class MainViewModel : ObservableObject
     {
+        private COM _serialPorts;
+
         private string _sendMessage;
 
-        public string sendMessage
+        public string SendMessage
         {
             get { return _sendMessage; }
             set
@@ -23,7 +25,7 @@ namespace COM_Ports.MVVM.ViewModel
 
         private string _receivedMessage;
 
-        public String receivedMessage
+        public String ReceivedMessage
         {
             get { return _receivedMessage; }
             set
@@ -35,7 +37,8 @@ namespace COM_Ports.MVVM.ViewModel
 
         private StringBuilder _logs = new StringBuilder();
 
-        public StringBuilder logs {
+        public StringBuilder logs 
+        {
             get { return _logs; }
             set
             {
@@ -44,17 +47,65 @@ namespace COM_Ports.MVVM.ViewModel
             }
         }
 
-/*        public RelayCommand SendMessageReadyCommand
+        public RelayCommand OpenButtonCommand
         {
             get
             {
-                return new RelayCommand(changed => receivedMessage = "s");
+                return new RelayCommand(click =>
+                {
+                    try
+                    {
+                        _serialPorts.OpenPorts();
+                    }
+                    catch (Exception ex)
+                    {
+                        logs = logs.AppendLine(ex.Message);
+                    }
+                    logs = logs.AppendLine("Ports have been successfully opened");
+                });
             }
-        }*/
+        }
+
+        public RelayCommand CloseButtonCommand
+        {
+            get
+            {
+                return new RelayCommand(click =>
+                {
+                    try
+                    {
+                        _serialPorts.ClosePorts();
+                    }
+                    catch (Exception ex)
+                    {
+                        logs = logs.AppendLine(ex.Message);
+                    }
+                    logs = logs.AppendLine("Ports have been successfully closed");
+                });
+            }
+        }
+        public RelayCommand SendDataCommand
+        {
+            get
+            {
+                return new RelayCommand(changed =>
+                {
+                    try 
+                    {
+                        _serialPorts.SendData(SendMessage);
+                        ReceivedMessage = _serialPorts.ReceivedData;
+                    } 
+                    catch (Exception ex)
+                    {
+                        logs = logs.AppendLine(ex.Message);
+                    }
+                });
+            }
+        }
 
         public MainViewModel()
         {
-
+            _serialPorts = new COM("COM1", "COM2");
         }
 
 
