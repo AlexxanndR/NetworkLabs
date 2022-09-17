@@ -56,12 +56,12 @@ namespace COM_Ports.MVVM.ViewModel
                     try
                     {
                         _serialPorts.OpenPorts();
+                        logs = logs.AppendLine("Ports have been successfully opened.");
                     }
                     catch (Exception ex)
                     {
                         logs = logs.AppendLine(ex.Message);
                     }
-                    logs = logs.AppendLine("Ports have been successfully opened");
                 });
             }
         }
@@ -75,12 +75,12 @@ namespace COM_Ports.MVVM.ViewModel
                     try
                     {
                         _serialPorts.ClosePorts();
+                        logs = logs.AppendLine("Ports have been successfully closed.");
                     }
                     catch (Exception ex)
                     {
                         logs = logs.AppendLine(ex.Message);
                     }
-                    logs = logs.AppendLine("Ports have been successfully closed");
                 });
             }
         }
@@ -107,7 +107,5 @@ namespace COM_Ports.MVVM.ViewModel
         {
             _serialPorts = new COM("COM1", "COM2");
         }
-
-
     }
 }

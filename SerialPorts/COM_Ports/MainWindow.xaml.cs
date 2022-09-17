@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +24,7 @@ namespace COM_Ports
     {
         public MainWindow()
         {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-en");
             InitializeComponent();
         }
     }

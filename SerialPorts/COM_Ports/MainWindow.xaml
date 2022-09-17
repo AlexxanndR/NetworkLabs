@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:COM_Ports" xmlns:viewmodel="clr-namespace:COM_Ports.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="SerialPortsApp"
+        Title="SerialPortsApp" Icon="Icons/serial_port_icon.png"
         Height="500" Width="1000"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Window.DataContext>
@@ -29,7 +29,7 @@
 
         <ScrollViewer Grid.Column="0">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="COM1"
+                <TextBlock Text="INPUT"
                            HorizontalAlignment="Center"
                            Background="Transparent" Foreground="Black"
                            FontSize="45" FontFamily="Oswald Medium"/>
@@ -47,7 +47,7 @@
         </ScrollViewer>
         <ScrollViewer Grid.Column="1">
             <StackPanel Orientation="Vertical" CanVerticallyScroll="True">
-                <TextBlock Text="COM2"
+                <TextBlock Text="OUTPUT"
                        HorizontalAlignment="Center"
                        Background="Transparent" Foreground="Black"
                        FontSize="45" FontFamily="Oswald Medium"/>

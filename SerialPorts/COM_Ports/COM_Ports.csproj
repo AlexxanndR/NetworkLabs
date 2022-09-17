@@ -106,5 +106,8 @@
     <Folder Include="MVVM\Model\" />
     <Folder Include="MVVM\View\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\serial_port_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

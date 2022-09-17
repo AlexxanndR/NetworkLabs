@@ -25,6 +25,8 @@ namespace COM_Ports.Core
         {
             _serialPort1 = new SerialPort(firstPortName, 9600, Parity.None, 8, StopBits.One);
             _serialPort2 = new SerialPort(secondPortName, 9600, Parity.None, 8, StopBits.One);
+            _serialPort1.Encoding = Encoding.Unicode;
+            _serialPort2.Encoding = Encoding.Unicode;
             //_serialPort1.Handshake = _serialPort2.Handshake = Handshake.None;
             _serialPort2.DataReceived += new SerialDataReceivedEventHandler(DataReceivedEventHandler);
             _receivedData = String.Empty;
