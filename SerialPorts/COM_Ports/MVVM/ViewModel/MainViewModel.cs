@@ -1,9 +1,7 @@
 ﻿using COM_Ports.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace COM_Ports.MVVM.ViewModel
 {
@@ -37,7 +35,7 @@ namespace COM_Ports.MVVM.ViewModel
 
         private StringBuilder _logs = new StringBuilder();
 
-        public StringBuilder logs 
+        public StringBuilder Logs 
         {
             get { return _logs; }
             set
@@ -56,11 +54,11 @@ namespace COM_Ports.MVVM.ViewModel
                     try
                     {
                         _serialPorts.OpenPorts();
-                        logs = logs.AppendLine("Ports have been successfully opened.");
+                        Logs = Logs.AppendLine("Ports have been successfully opened.");
                     }
                     catch (Exception ex)
                     {
-                        logs = logs.AppendLine(ex.Message);
+                        Logs = Logs.AppendLine(ex.Message);
                     }
                 });
             }
@@ -75,11 +73,11 @@ namespace COM_Ports.MVVM.ViewModel
                     try
                     {
                         _serialPorts.ClosePorts();
-                        logs = logs.AppendLine("Ports have been successfully closed.");
+                        Logs = Logs.AppendLine("Ports have been successfully closed.");
                     }
                     catch (Exception ex)
                     {
-                        logs = logs.AppendLine(ex.Message);
+                        Logs = Logs.AppendLine(ex.Message);
                     }
                 });
             }
@@ -97,14 +95,14 @@ namespace COM_Ports.MVVM.ViewModel
                     } 
                     catch (Exception ex)
                     {
-                        logs = logs.AppendLine(ex.Message);
+                        Logs = Logs.AppendLine(ex.Message);
                     }
                 });
             }
         }
 
         public MainViewModel()
-        {
+        {  
             _serialPorts = new COM("COM1", "COM2");
         }
     }

@@ -27,15 +27,21 @@ namespace COM_Ports.Core
             _serialPort2 = new SerialPort(secondPortName, 9600, Parity.None, 8, StopBits.One);
             _serialPort1.Encoding = Encoding.Unicode;
             _serialPort2.Encoding = Encoding.Unicode;
-            //_serialPort1.Handshake = _serialPort2.Handshake = Handshake.None;
             _serialPort2.DataReceived += new SerialDataReceivedEventHandler(DataReceivedEventHandler);
             _receivedData = String.Empty;
         }
 
         public void OpenPorts()
         {
-            _serialPort1.Open();
-            _serialPort2.Open();
+            try
+            {
+                _serialPort1.Open();
+                _serialPort2.Open();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The ports do not exist.");
+            }
         }
 
         public void SendData(string data)
@@ -51,8 +57,14 @@ namespace COM_Ports.Core
 
         public void ClosePorts()
         {
-            _serialPort1.Close();
-            _serialPort2.Close();
+            if (_serialPort1.IsOpen == true && _serialPort2.IsOpen == true)
+            {
+                _serialPort1.Close();
+                _serialPort2.Close();
+            } else
+            {
+                throw new Exception("Ports are not open yet.");
+            }
         }
     }
 }
