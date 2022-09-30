@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COM_Ports.Core
+namespace COM_Ports_Packages.Core
 {
     internal class COM
     {
@@ -21,6 +21,16 @@ namespace COM_Ports.Core
             get { return _receivedData; }
             private set { _receivedData = value; }
         }
+
+        private void DataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+            ReceivedData = _serialPort2.ReadExisting();
+        }
+
+        private void CheckMessage(string message)
+        {
+
+        } 
 
         public COM(string firstPortName, string secondPortName)
         {
@@ -51,11 +61,6 @@ namespace COM_Ports.Core
         {
             _serialPort1.Write(data);
             Thread.Sleep(50);
-        }
-
-        private void DataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
-        {            
-            ReceivedData = _serialPort2.ReadExisting();
         }
 
         public void ClosePorts()

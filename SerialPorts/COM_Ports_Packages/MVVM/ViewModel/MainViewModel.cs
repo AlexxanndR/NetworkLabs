@@ -1,9 +1,9 @@
-﻿using COM_Ports.Core;
+﻿using COM_Ports_Packages.Core;
 using System;
 using System.Linq;
 using System.Text;
 
-namespace COM_Ports.MVVM.ViewModel
+namespace COM_Ports_Packages.MVVM.ViewModel
 {
     internal class MainViewModel : ObservableObject
     {
@@ -17,6 +17,18 @@ namespace COM_Ports.MVVM.ViewModel
             set
             {
                 _sendMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _stuffedMessage;
+
+        public string StuffedMessage
+        {
+            get { return _stuffedMessage; }
+            set
+            {
+                _stuffedMessage = value;
                 OnPropertyChanged();
             }
         }
@@ -82,7 +94,27 @@ namespace COM_Ports.MVVM.ViewModel
                 });
             }
         }
-        public RelayCommand SendDataCommand
+
+        public RelayCommand ClearButtonCommand
+        {
+            get
+            {
+                return new RelayCommand(click =>
+                {
+                    try
+                    {
+                        _sendMessage = _receivedMessage = _stuffedMessage = String.Empty;
+                        Logs = Logs.AppendLine("Windows were cleared.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logs = Logs.AppendLine(ex.Message);
+                    }
+                });
+            }
+        }
+
+        public RelayCommand SendButtonCommand
         {
             get
             {
