@@ -35,7 +35,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
 
         private string _receivedMessage;
 
-        public String ReceivedMessage
+        public string ReceivedMessage
         {
             get { return _receivedMessage; }
             set
@@ -45,8 +45,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
             }
         }
 
-        private StringBuilder _logs = new StringBuilder();
-
+        private StringBuilder _logs;
         public StringBuilder Logs 
         {
             get { return _logs; }
@@ -54,6 +53,26 @@ namespace COM_Ports_Packages.MVVM.ViewModel
             {
                 _logs = value;
                 OnPropertyChanged();
+            }
+        }
+
+
+        public RelayCommand SendButtonCommand
+        {
+            get
+            {
+                return new RelayCommand(changed =>
+                {
+                    try
+                    {
+                        _serialPorts.SendPackage(SendMessage);
+                        ReceivedMessage = _serialPorts.ReceivedData;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logs = Logs.AppendLine(ex.Message);
+                    }
+                });
             }
         }
 
@@ -101,41 +120,17 @@ namespace COM_Ports_Packages.MVVM.ViewModel
             {
                 return new RelayCommand(click =>
                 {
-                    try
-                    {
-                        _sendMessage = _receivedMessage = _stuffedMessage = String.Empty;
-                        Logs = Logs.AppendLine("Windows were cleared.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Logs = Logs.AppendLine(ex.Message);
-                    }
+                    SendMessage = ReceivedMessage = StuffedMessage = String.Empty;
+                    Logs = Logs.AppendLine("Windows were cleared.");
                 });
             }
         }
 
-        public RelayCommand SendButtonCommand
-        {
-            get
-            {
-                return new RelayCommand(changed =>
-                {
-                    try 
-                    {
-                        _serialPorts.SendData(SendMessage);
-                        ReceivedMessage = _serialPorts.ReceivedData;
-                    } 
-                    catch (Exception ex)
-                    {
-                        Logs = Logs.AppendLine(ex.Message);
-                    }
-                });
-            }
-        }
 
         public MainViewModel()
         {  
-            _serialPorts = new COM("COM5", "COM6");
+            _logs        = new StringBuilder();
+            _serialPorts = new COM("COM1", "COM2");
         }
     }
 }

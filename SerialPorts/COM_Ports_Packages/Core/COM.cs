@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,8 +16,28 @@ namespace COM_Ports_Packages.Core
         private SerialPort _serialPort1;
         private SerialPort _serialPort2;
 
-        private string _receivedData;
+        private string _packageExample;
+        public string PackageExample
+        {
+            get { return _packageExample; ; }
+            private set { _packageExample = value; }
+        }
 
+        private string _packageFlag;
+        public string PackageFlag
+        {
+            get { return _packageFlag; ; }
+            private set { _packageFlag = value; }
+        }
+
+        private string _packageLength;
+        public string PackageLength
+        {
+            get { return _packageLength; ; }
+            private set { _packageLength = value; }
+        }
+
+        private string _receivedData;
         public string ReceivedData
         {
             get { return _receivedData; }
@@ -27,19 +49,47 @@ namespace COM_Ports_Packages.Core
             ReceivedData = _serialPort2.ReadExisting();
         }
 
-        private void CheckMessage(string message)
+        private void CheckPackageCorrectness(string package)
+        {
+            if (String.IsNullOrEmpty(package))
+                throw new Exception("The package is empty.");
+
+            if (!Regex.IsMatch(package, @"^[a-f0-9]+$"))
+                throw new Exception("The package must contain only lowercase hex numbers.");
+
+            if (package.Length % 4 != 0)
+                throw new Exception("The package structure is incorrect.");
+
+            if (package.Length % (2 * 4) == 0)
+                throw new Exception("The package hasn't payload.");
+
+            if (package.Substring(0, 2) != PackageFlag)
+                throw new Exception("The package flag is invalid. Should be <" + PackageFlag + ">.");
+
+            if (package.Substring(2, 2) != PackageLength)
+                throw new Exception("The package length is invalid. Should be <" + PackageLength + ">.");
+        } 
+
+        private string BitStuffing(string package)
         {
 
-        } 
+        }
 
         public COM(string firstPortName, string secondPortName)
         {
+            PackageFlag = "7b";
+            PackageLength = "02";
+            PackageExample = "0xeb0a020d00ff";
+
             _serialPort1 = new SerialPort(firstPortName, 9600, Parity.None, 8, StopBits.One);
             _serialPort2 = new SerialPort(secondPortName, 9600, Parity.None, 8, StopBits.One);
+
             _serialPort1.WriteTimeout = 10;
             _serialPort2.ReadTimeout = 10;
+
             _serialPort1.Encoding = Encoding.Unicode;
             _serialPort2.Encoding = Encoding.Unicode;
+
             _serialPort2.DataReceived += new SerialDataReceivedEventHandler(DataReceivedEventHandler);
             _receivedData = String.Empty;
         }
@@ -56,13 +106,6 @@ namespace COM_Ports_Packages.Core
                 throw new Exception("The ports do not exist.");
             }
         }
-
-        public void SendData(string data)
-        {
-            _serialPort1.Write(data);
-            Thread.Sleep(50);
-        }
-
         public void ClosePorts()
         {
             if (_serialPort1.IsOpen == true && _serialPort2.IsOpen == true)
@@ -74,6 +117,29 @@ namespace COM_Ports_Packages.Core
             {
                 throw new Exception("Ports are not open yet.");
             }
+        }
+
+        public void SendPackage(string package)
+        {
+            try
+            {
+                CheckPackageCorrectness(package);
+            } 
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\nInput example: " + PackageExample);
+            }
+
+            var packageHash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(package));
+            package += BitConverter.ToString(packageHash).ToLower().Replace("-", String.Empty);
+
+            _serialPort1.Write(package);
+            Thread.Sleep(50);
+        }
+        public void SendMessage(string data)
+        {
+            _serialPort1.Write(data);
+            Thread.Sleep(50);
         }
     }
 }

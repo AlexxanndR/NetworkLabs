@@ -44,11 +44,11 @@
                        Background="Transparent" Foreground="Black"
                        FontSize="40" FontFamily="Oswald Medium"/>
             <TextBox Text="{Binding SendMessage, UpdateSourceTrigger=PropertyChanged}"
-                     Height="280" Margin="10" VerticalScrollBarVisibility="Auto"
+                     Height="285" Margin="10" VerticalScrollBarVisibility="Auto"
                      Background="AliceBlue" BorderBrush="Black" BorderThickness="1"
                      FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
             </TextBox>
-            <Button Content="SEND" FontSize="30" 
+            <Button Content="SEND" FontFamily="Agency FB" FontSize="30" 
                     Width="200"
                     Background="LightGreen" BorderBrush="Black" BorderThickness="1"
                     Command="{Binding SendButtonCommand}"/>
@@ -89,21 +89,21 @@
                            Background="Transparent" Foreground="Black"
                            FontSize="40" FontFamily="Oswald Medium"/>
                 <TextBlock Text="{Binding Logs}"
-                           HorizontalAlignment="Left" Margin="10"
-                           Background="Transparent" Foreground="DimGray"
-                           FontSize="20" FontWeight="Light" FontFamily="Oswald" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Stretch" Margin="10"
+                           Background="Transparent" Foreground="Black"
+                           FontSize="20" FontFamily="Calibri" TextWrapping="Wrap"/>
             </StackPanel>
         </ScrollViewer>
         
         <StackPanel Grid.Row="1" Grid.ColumnSpan="4"
                     Orientation="Horizontal">
-            <Button Content="OPEN" FontSize="30" Width="400"
+            <Button Content="OPEN" FontFamily="Agency FB" FontSize="30" Width="400"
                     BorderBrush="Black" BorderThickness="1"
                     Command="{Binding OpenButtonCommand}"/>
-            <Button Content="CLOSE" FontSize="30" Width="400"
+            <Button Content="CLOSE" FontFamily="Agency FB" FontSize="30" Width="400"
                     BorderBrush="Black" BorderThickness="1"
                     Command="{Binding CloseButtonCommand}"/>
-            <Button Content="CLEAR" FontSize="30" Width="400"
+            <Button Content="CLEAR" FontFamily="Agency FB" FontSize="30" Width="400"
                     BorderBrush="Black" BorderThickness="1"
                     Command="{Binding ClearButtonCommand}"/>
         </StackPanel>
