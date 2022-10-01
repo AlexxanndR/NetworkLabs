@@ -72,12 +72,18 @@ namespace COM_Ports_Packages.Core
 
         private string BitStuffing(string package)
         {
+/*            byte[] bytes = Enumerable.Range(0, package.Length / 2)
+                         .Select(i => package.Substring(i * 2, 2))
+                         .Select(i => i == PackageFlag ? (Convert.ToByte(i, 16) << 1) | 1 : Convert.ToByte(i, 16));
 
+            var a = BitConverter.ToString(bytes);
+
+            return "";*/
         }
 
         public COM(string firstPortName, string secondPortName)
         {
-            PackageFlag = "7b";
+            PackageFlag = "0b";
             PackageLength = "02";
             PackageExample = "0xeb0a020d00ff";
 
