@@ -87,7 +87,7 @@
             </Border>
         </StackPanel>
 
-        <ScrollViewer Grid.Column="3">
+        <ScrollViewer Grid.Column="3" VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="LOGS"
                            HorizontalAlignment="Center"

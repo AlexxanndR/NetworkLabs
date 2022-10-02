@@ -83,7 +83,7 @@ namespace COM_Ports_Packages.Core
 
             if (package.Substring(2, 2) != PackageLength)
                 throw new Exception("The package length is invalid. Should be <" + PackageLength + ">.");
-        } 
+        }
 
         private string BitStuffing(string package)
         {
@@ -150,6 +150,9 @@ namespace COM_Ports_Packages.Core
 
         public void SendPackage(string package)
         {
+            if (_serialPort1.IsOpen == false || _serialPort2.IsOpen == false)
+                throw new Exception("Ports are not open yet.");
+
             try
             {
                 CheckPackageCorrectness(package);
