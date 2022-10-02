@@ -91,7 +91,6 @@ namespace COM_Ports_Packages.Core
                                      .Select(i => package.Substring(i * 2, 2))
                                      .Select((i, x) => (i == PackageFlag && x != 0) ? (byte)((Convert.ToByte(i, 16) << 1) | 1) : Convert.ToByte(i, 16))
                                      .ToArray();
-            var a = BitConverter.ToString(bytes);
             return BitConverter.ToString(bytes).Replace("-", String.Empty).ToLower();
         }
 

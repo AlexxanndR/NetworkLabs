@@ -67,7 +67,12 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     {
                         _serialPorts.SendPackage(SendMessage);
                         ReceivedMessage = _serialPorts.ReceivedData;
-                        StuffedMessage = _serialPorts.StuffedData;
+                        var receivedBytes = Enumerable.Range(0, _serialPorts.StuffedData.Length / 2)
+                                                      .Select(i => _serialPorts.StuffedData.Substring(i * 2, 2))
+                                                      .Select(i => Convert.ToByte(i, 16))
+                                                      .Select(i => Convert.ToString(i, 2))
+                                                      .ToArray();
+                        StuffedMessage = String.Join(" ", receivedBytes);
                     }
                     catch (Exception ex)
                     {
