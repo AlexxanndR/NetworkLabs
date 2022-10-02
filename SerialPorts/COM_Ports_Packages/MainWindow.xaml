@@ -56,16 +56,15 @@
 
         <StackPanel Grid.Column="1" Orientation="Vertical">
             <TextBlock Text="BIT STUFFING"
-                           HorizontalAlignment="Center"
-                           Background="Transparent" Foreground="Black"
-                           FontSize="40" FontFamily="Oswald Medium"/>
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="40" FontFamily="Oswald Medium"/>
             <Border BorderBrush="Black" BorderThickness="1"
                     Margin="10">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <TextBlock Text="{Binding StuffedMessage}"
-                               Height="330" HorizontalAlignment="Left"
+                <ScrollViewer Height="330" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding StuffedMessage}"                             
                                Background="Transparent" Foreground="DimGray"
-                               FontSize="25" FontWeight="Light" FontFamily="Courier new" TextWrapping="Wrap"/>
+                               FontSize="20" FontWeight="Light" FontFamily="Courier new" TextWrapping="Wrap"/>
                 </ScrollViewer>
             </Border>
         </StackPanel>
@@ -77,9 +76,9 @@
                        FontSize="40" FontFamily="Oswald Medium"/>
             <Border BorderBrush="Black" BorderThickness="1"
                     Margin="10">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer Height="330" VerticalScrollBarVisibility="Auto">
                     <TextBlock Text="{Binding ReceivedMessage}" 
-                               Height="330" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                                Background="AliceBlue"
                                FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
                     </TextBlock>

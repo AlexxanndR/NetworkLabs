@@ -75,7 +75,7 @@ namespace COM_Ports_Packages.Core
             if (package.Length % 4 != 0)
                 throw new Exception("The package structure is incorrect.");
 
-            if (package.Length % (2 * 4) == 0)
+            if (package.Length == 8)
                 throw new Exception("The package hasn't payload.");
 
             if (package.Substring(0, 2) != PackageFlag)
