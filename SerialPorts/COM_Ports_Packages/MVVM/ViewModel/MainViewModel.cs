@@ -67,6 +67,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     {
                         _serialPorts.SendPackage(SendMessage);
                         ReceivedMessage = _serialPorts.ReceivedData;
+                        StuffedMessage = _serialPorts.StuffedData;
                     }
                     catch (Exception ex)
                     {
@@ -85,7 +86,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     try
                     {
                         _serialPorts.OpenPorts();
-                        Logs = Logs.AppendLine("Ports have been successfully opened.");
+                        Logs = Logs.AppendLine("Ports were successfully opened.");
                     }
                     catch (Exception ex)
                     {
@@ -104,7 +105,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     try
                     {
                         _serialPorts.ClosePorts();
-                        Logs = Logs.AppendLine("Ports have been successfully closed.");
+                        Logs = Logs.AppendLine("Ports were successfully closed.");
                     }
                     catch (Exception ex)
                     {

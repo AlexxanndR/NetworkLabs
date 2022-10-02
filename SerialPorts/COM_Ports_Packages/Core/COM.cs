@@ -30,11 +30,25 @@ namespace COM_Ports_Packages.Core
             private set { _packageFlag = value; }
         }
 
+        private string _packageStuffedFlag;
+        public string PackageStuffedFlag
+        {
+            get { return _packageStuffedFlag; ; }
+            private set { _packageStuffedFlag = value; }
+        }
+
         private string _packageLength;
         public string PackageLength
         {
             get { return _packageLength; ; }
             private set { _packageLength = value; }
+        }
+
+        private string _stuffedData;
+        public string StuffedData
+        {
+            get { return _stuffedData; }
+            private set { _stuffedData = value; }
         }
 
         private string _receivedData;
@@ -44,9 +58,10 @@ namespace COM_Ports_Packages.Core
             private set { _receivedData = value; }
         }
 
-        private void DataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
+        private void PackageReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
         {
-            ReceivedData = _serialPort2.ReadExisting();
+            ReceivedData = StuffedData = _serialPort2.ReadExisting();
+            ReceivedData = BitDestuffing(ReceivedData);
         }
 
         private void CheckPackageCorrectness(string package)
@@ -72,18 +87,27 @@ namespace COM_Ports_Packages.Core
 
         private string BitStuffing(string package)
         {
-/*            byte[] bytes = Enumerable.Range(0, package.Length / 2)
-                         .Select(i => package.Substring(i * 2, 2))
-                         .Select(i => i == PackageFlag ? (Convert.ToByte(i, 16) << 1) | 1 : Convert.ToByte(i, 16));
-
+            byte[] bytes = Enumerable.Range(0, package.Length / 2)
+                                     .Select(i => package.Substring(i * 2, 2))
+                                     .Select((i, x) => (i == PackageFlag && x != 0) ? (byte)((Convert.ToByte(i, 16) << 1) | 1) : Convert.ToByte(i, 16))
+                                     .ToArray();
             var a = BitConverter.ToString(bytes);
+            return BitConverter.ToString(bytes).Replace("-", String.Empty).ToLower();
+        }
 
-            return "";*/
+        private string BitDestuffing(string package)
+        {
+            byte[] bytes = Enumerable.Range(0, package.Length / 2)
+                                     .Select(i => package.Substring(i * 2, 2))
+                                     .Select(i => i == PackageStuffedFlag ? (byte)(Convert.ToByte(i, 16) >> 1) : Convert.ToByte(i, 16))
+                                     .ToArray();
+            return BitConverter.ToString(bytes).Replace("-", String.Empty).ToLower();
         }
 
         public COM(string firstPortName, string secondPortName)
         {
             PackageFlag = "0b";
+            PackageStuffedFlag = Convert.ToString((Convert.ToByte(PackageFlag, 16) << 1) | 1, 16);
             PackageLength = "02";
             PackageExample = "0xeb0a020d00ff";
 
@@ -96,7 +120,7 @@ namespace COM_Ports_Packages.Core
             _serialPort1.Encoding = Encoding.Unicode;
             _serialPort2.Encoding = Encoding.Unicode;
 
-            _serialPort2.DataReceived += new SerialDataReceivedEventHandler(DataReceivedEventHandler);
+            _serialPort2.DataReceived += new SerialDataReceivedEventHandler(PackageReceivedEventHandler);
             _receivedData = String.Empty;
         }
 
@@ -138,13 +162,9 @@ namespace COM_Ports_Packages.Core
 
             var packageHash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(package));
             package += BitConverter.ToString(packageHash).ToLower().Replace("-", String.Empty);
+            package = BitStuffing(package);
 
             _serialPort1.Write(package);
-            Thread.Sleep(50);
-        }
-        public void SendMessage(string data)
-        {
-            _serialPort1.Write(data);
             Thread.Sleep(50);
         }
     }

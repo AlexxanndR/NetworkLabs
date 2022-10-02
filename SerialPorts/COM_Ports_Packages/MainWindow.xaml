@@ -54,18 +54,19 @@
                     Command="{Binding SendButtonCommand}"/>
         </StackPanel>
 
-        <ScrollViewer Grid.Column="1">
-            <StackPanel Grid.Column="1" Orientation="Vertical">
-                <TextBlock Text="BIT STUFFING"
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <TextBlock Text="BIT STUFFING"
                            HorizontalAlignment="Center"
                            Background="Transparent" Foreground="Black"
                            FontSize="40" FontFamily="Oswald Medium"/>
+            <Border BorderBrush="Black" BorderThickness="1"
+                        Margin="10">
                 <TextBlock Text="{Binding StuffedMessage}"
-                           HorizontalAlignment="Left" Margin="10"
-                           Background="Transparent" Foreground="DimGray"
-                           FontSize="20" FontWeight="Light" FontFamily="Oswald" TextWrapping="Wrap"/>
-            </StackPanel>
-        </ScrollViewer>
+                               Height="330" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                               Background="Transparent" Foreground="DimGray"
+                               FontSize="20" FontWeight="Light" FontFamily="Oswald" TextWrapping="Wrap"/>
+            </Border>
+        </StackPanel>
 
         <StackPanel Grid.Column="2" Orientation="Vertical" CanVerticallyScroll="True">
             <TextBlock Text="OUTPUT"
