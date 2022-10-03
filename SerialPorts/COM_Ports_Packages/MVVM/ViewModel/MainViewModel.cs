@@ -67,10 +67,8 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     {
                         _serialPorts.SendPackage(SendMessage);
                         ReceivedMessage = _serialPorts.ReceivedData;
-                        var receivedBytes = Enumerable.Range(0, _serialPorts.StuffedData.Length / 2)
-                                                      .Select(i => _serialPorts.StuffedData.Substring(i * 2, 2))
-                                                      .Select(i => Convert.ToByte(i, 16))
-                                                      .Select(i => Convert.ToString(i, 2))
+                        var receivedBytes = Enumerable.Range(0, _serialPorts.StuffedData.Length / 8)
+                                                      .Select(i => _serialPorts.StuffedData.Substring(i * 8, 8))
                                                       .ToArray();
                         StuffedMessage = String.Join(" ", receivedBytes);
                     }
@@ -134,8 +132,8 @@ namespace COM_Ports_Packages.MVVM.ViewModel
 
 
         public MainViewModel()
-        {  
-            _logs        = new StringBuilder();
+        {
+            _logs = new StringBuilder();
             _serialPorts = new COM("COM1", "COM2");
         }
     }
