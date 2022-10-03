@@ -82,9 +82,9 @@ namespace COM_Ports_Packages.Core
 
         public COM(string firstPortName, string secondPortName)
         {
-            PackageFlag = "0b";
+            PackageFlag = "7e";
             PackageLength = "02";
-            PackageExample = "0xeb0a020d00ff";
+            PackageExample = "eb0a020d00ff";
 
             _serialPort1 = new SerialPort(firstPortName, 9600, Parity.None, 8, StopBits.One);
             _serialPort2 = new SerialPort(secondPortName, 9600, Parity.None, 8, StopBits.One);

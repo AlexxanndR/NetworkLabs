@@ -10,7 +10,7 @@ namespace COM_Ports_Packages.Core
     {
         private static string GetMaxSubsequence(string flag)
         {
-            return new string(flag.Select((c, index) => flag.Substring(index).TakeWhile((x, i) => x == c && i <= 5))
+            return new string(flag.Select((c, index) => flag.Substring(index).TakeWhile((x, i) => x == c && i < 5))
                                   .OrderByDescending(x => x.Count())
                                   .First()
                                   .ToArray());
