@@ -10,10 +10,11 @@ namespace COM_Ports_Packages.Core
     {
         private static string GetMaxSubsequence(string flag)
         {
-            return new string(flag.Select((c, index) => flag.Substring(index).TakeWhile((x, i) => x == c && i < 5))
-                                  .OrderByDescending(x => x.Count())
-                                  .First()
-                                  .ToArray());
+            var repetingBits = new string(flag.Select((c, index) => flag.Substring(index).TakeWhile((x, i) => x == c && i < 5))
+                                              .OrderByDescending(x => x.Count())
+                                              .First()
+                                              .ToArray());
+            return flag.Substring(0, flag.IndexOf(repetingBits) + repetingBits.Length);
         }
 
         public static string BitStuffing(string package)
@@ -32,7 +33,7 @@ namespace COM_Ports_Packages.Core
                 if (binaryPackage[field].Contains(maxSubsequnce))
                 {
                     int startIndex   = binaryPackage[field].IndexOf(maxSubsequnce);
-                    char additionBit = maxSubsequnce[0] == '0' ? '1' : '0';
+                    char additionBit = maxSubsequnce[maxSubsequnce.Length - 1] == '0' ? '1' : '0';
                     binaryPackage[field] = binaryPackage[field].Substring(0, startIndex + maxSubsequnce.Length) + additionBit + binaryPackage[field].Substring(startIndex + maxSubsequnce.Length);
                 }
             }

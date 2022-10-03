@@ -82,7 +82,7 @@ namespace COM_Ports_Packages.Core
 
         public COM(string firstPortName, string secondPortName)
         {
-            PackageFlag = "7e";
+            PackageFlag = "0b";
             PackageLength = "02";
             PackageExample = "eb0a020d00ff";
 
