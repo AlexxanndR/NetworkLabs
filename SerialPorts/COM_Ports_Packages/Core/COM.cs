@@ -56,6 +56,10 @@ namespace COM_Ports_Packages.Core
         {
             ReceivedData = StuffedData = _serialPort2.ReadExisting();
             ReceivedData = Stuffing.BitDestuffing(ReceivedData);
+
+            var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(ReceivedData.Substring(0, 12)));
+            if (BitConverter.ToString(hash).ToLower().Replace("-", String.Empty) != ReceivedData.Substring(12))
+                throw new Exception("The hash didn't match.");
         }
 
         private void CheckPackageCorrectness(string package)
@@ -96,7 +100,7 @@ namespace COM_Ports_Packages.Core
             _serialPort2.Encoding = Encoding.Unicode;
 
             _serialPort2.DataReceived += new SerialDataReceivedEventHandler(PackageReceivedEventHandler);
-            _receivedData = String.Empty;
+            ReceivedData = StuffedData = String.Empty;
         }
 
         public void OpenPorts()
@@ -120,14 +124,14 @@ namespace COM_Ports_Packages.Core
             }
             else
             {
-                throw new Exception("Ports are not open yet.");
+                throw new Exception("The ports are not open yet.");
             }
         }
 
         public void SendPackage(string package)
         {
             if (_serialPort1.IsOpen == false || _serialPort2.IsOpen == false)
-                throw new Exception("Ports are not open yet.");
+                throw new Exception("The ports are not open yet.");
 
             try
             {

@@ -46,9 +46,12 @@ namespace COM_Ports_Packages.Core
             string binaryFlag    = package.Substring(0, 8);
             string maxSubsequnce = GetMaxSubsequence(binaryFlag);
 
-            for (int i = 8; i < package.Length - maxSubsequnce.Length + 1; i += 4)
-                if (package.Substring(i, maxSubsequnce.Length).Equals(maxSubsequnce)) 
-                    package = package.Remove(i + maxSubsequnce.Length, 1);
+            for (int i = 8; i < package.Length - maxSubsequnce.Length + 1; i += 8)
+            {
+                var selectedByte = package.Substring(i, 8);
+                if (selectedByte.Contains(maxSubsequnce))
+                    package = package.Remove(i + selectedByte.IndexOf(maxSubsequnce) + maxSubsequnce.Length, 1);
+            }
 
             var hexPackage = Enumerable.Range(0, package.Length / 8)
                                        .Select(i => package.Substring(i * 8, 8))
