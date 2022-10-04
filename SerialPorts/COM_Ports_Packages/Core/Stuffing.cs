@@ -10,11 +10,7 @@ namespace COM_Ports_Packages.Core
     {
         private static string GetMaxSubsequence(string flag)
         {
-            var repetingBits = new string(flag.Select((c, index) => flag.Substring(index).TakeWhile((x, i) => x == c && i < 5))
-                                              .OrderByDescending(x => x.Count())
-                                              .First()
-                                              .ToArray());
-            return flag.Substring(0, flag.IndexOf(repetingBits) + repetingBits.Length);
+            return flag.Substring(0, 7);
         }
 
         public static string BitStuffing(string package)
