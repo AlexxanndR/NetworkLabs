@@ -1,6 +1,7 @@
 ﻿using COM_Ports_Packages.Core;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace COM_Ports_Packages.MVVM.ViewModel
@@ -67,6 +68,11 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     {
                         _serialPorts.SendPackage(SendMessage);
                         ReceivedMessage = _serialPorts.ReceivedData;
+
+                        var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(ReceivedMessage.Substring(0, 12)));
+                        if (BitConverter.ToString(hash).ToLower().Replace("-", String.Empty) != ReceivedMessage.Substring(12))
+                            throw new Exception("The hash didn't match.");
+
                         var receivedBytes = Enumerable.Range(0, _serialPorts.StuffedData.Length / 8)
                                                       .Select(i => _serialPorts.StuffedData.Substring(i * 8, 8))
                                                       .ToArray();

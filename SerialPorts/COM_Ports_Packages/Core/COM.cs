@@ -56,10 +56,6 @@ namespace COM_Ports_Packages.Core
         {
             ReceivedData = StuffedData = _serialPort2.ReadExisting();
             ReceivedData = Stuffing.BitDestuffing(ReceivedData);
-
-            var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(ReceivedData.Substring(0, 12)));
-            if (BitConverter.ToString(hash).ToLower().Replace("-", String.Empty) != ReceivedData.Substring(12))
-                throw new Exception("The hash didn't match.");
         }
 
         private void CheckPackageCorrectness(string package)
@@ -70,11 +66,8 @@ namespace COM_Ports_Packages.Core
             if (!Regex.IsMatch(package, @"^[a-f0-9]+$"))
                 throw new Exception("The package must contain only lowercase hex numbers.");
 
-            if (package.Length % 4 != 0)
+            if (package.Length != 12)
                 throw new Exception("The package structure is incorrect.");
-
-            if (package.Length == 8)
-                throw new Exception("The package hasn't payload.");
 
             if (package.Substring(0, 2) != PackageFlag)
                 throw new Exception("The package flag is invalid. Should be <" + PackageFlag + ">.");
