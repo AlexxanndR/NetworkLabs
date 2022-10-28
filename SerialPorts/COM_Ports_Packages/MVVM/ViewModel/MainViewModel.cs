@@ -67,7 +67,7 @@ namespace COM_Ports_Packages.MVVM.ViewModel
                     try
                     {
                         _serialPorts.SendPackage(SendMessage);
-                        ReceivedMessage = _serialPorts.ReceivedData;
+                        ReceivedMessage = _serialPorts.ReceivedData;                       
 
                         var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(ReceivedMessage.Substring(0, 12)));
                         if (BitConverter.ToString(hash).ToLower().Replace("-", String.Empty) != ReceivedMessage.Substring(12))

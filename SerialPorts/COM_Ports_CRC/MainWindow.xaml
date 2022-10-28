@@ -1,0 +1,151 @@
+﻿<Window x:Class="COM_Ports_CRC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:COM_Ports_CRC"
+        xmlns:viewmodel="clr-namespace:COM_Ports_CRC.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Title="SerialPortsApp" Icon="Icons/serial_port_icon.png"
+        Height="500" Width="1200"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid Background="Azure">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="1" Grid.ColumnSpan="3"
+                BorderBrush="Black" BorderThickness="1"/>
+
+        <Border Grid.Column="0"
+                BorderBrush="Black" BorderThickness="0 0 1 0"/>
+        <Border Grid.Column="1"
+                BorderBrush="Black" BorderThickness="0 0 1 0"/>
+        <Border Grid.Column="2"
+                BorderBrush="Black" BorderThickness="0 0 1 0"/>
+        <Border Grid.Column="3"
+                BorderBrush="Black" BorderThickness="0 0 1 0"/>
+
+        <StackPanel Grid.Column="0" Orientation="Vertical">
+            <TextBlock Text="INPUT"
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="40" FontFamily="Oswald Medium"/>
+            <TextBox Text="{Binding HexSendMessage, UpdateSourceTrigger=PropertyChanged}"
+                     Height="100" Margin="10 10 10 0" VerticalScrollBarVisibility="Auto"
+                     Background="Transparent" BorderBrush="Black" BorderThickness="1"
+                     FontSize="25" FontFamily="Courier new" TextWrapping="Wrap">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:InvokeCommandAction Command="{Binding HexToBinCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+            <Border BorderBrush="Black" BorderThickness="1 0 1 1"
+                    Margin="10 0 10 10">
+                <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding BinSendMessage}"                             
+                               Background="Transparent"
+                               FontSize="20" FontWeight="Light" FontFamily="Courier new" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+            <Button Content="SEND" FontFamily="Agency FB" FontSize="30" 
+                    Width="200"
+                    Background="LightGreen" BorderBrush="Black" BorderThickness="1"
+                    Command="{Binding SendButtonCommand}"/>
+            <StackPanel Orientation="Horizontal" Margin="10 5">
+                <TextBlock Text="ERRORS: "
+                           HorizontalAlignment="Center"
+                           Background="Transparent" Foreground="Black"
+                           FontSize="25" FontFamily="Oswald Medium"/>
+                <TextBox Text="{Binding ErrorsNum, UpdateSourceTrigger=PropertyChanged}"
+                         Height="30" Width="190" VerticalScrollBarVisibility="Auto"
+                         Background="AliceBlue" BorderBrush="Black" BorderThickness="1"
+                         FontSize="25" FontFamily="Courier new" TextWrapping="Wrap"/>
+            </StackPanel>
+            <Button Content="GENERATE" FontFamily="Agency FB" FontSize="30" 
+                    Width="200"
+                    Background="Tomato" BorderBrush="Black" BorderThickness="1"
+                    Command="{Binding GenerateErrorCommand}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <TextBlock Text="CRC"
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="40" FontFamily="Oswald Medium"/>
+            <Border BorderBrush="Black" BorderThickness="1"
+                    Margin="10">
+                <ScrollViewer Height="330" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding CRC}"                             
+                               Background="Transparent"
+                               FontSize="20" FontWeight="Light" FontFamily="Courier new" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Vertical" CanVerticallyScroll="True">
+            <TextBlock Text="OUTPUT"
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="40" FontFamily="Oswald Medium"/>
+            <Border BorderBrush="Black" BorderThickness="1 1 1 0"
+                    Margin="10 10 10 0">
+                <ScrollViewer Height="165" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding HexReceivedMessage}" 
+                               Height="165" VerticalAlignment="Top"
+                               Background="Transparent"
+                               FontSize="30" FontFamily="Courier new" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+            <Border BorderBrush="Black" BorderThickness="1"
+                    Margin="10 0">
+                <ScrollViewer Height="165" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding BinReceivedMessage}" 
+                               Height="165" VerticalAlignment="Top"
+                               Background="Transparent"
+                               FontSize="30" FontFamily="Courier new" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Column="3" Orientation="Vertical">
+            <TextBlock Text="LOGS"
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="40" FontFamily="Oswald Medium"/>
+            <ScrollViewer Height="340" VerticalScrollBarVisibility="Auto">
+                <TextBlock Text="{Binding Logs}"
+                           HorizontalAlignment="Stretch" Margin="10"
+                           Background="Transparent" Foreground="Black"
+                           FontSize="20" FontFamily="Agency FB" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="4"
+                    Orientation="Horizontal">
+            <Button Content="OPEN" FontFamily="Agency FB" FontSize="30" Width="400"
+                    BorderBrush="Black" BorderThickness="1"
+                    Command="{Binding OpenButtonCommand}"/>
+            <Button Content="CLOSE" FontFamily="Agency FB" FontSize="30" Width="400"
+                    BorderBrush="Black" BorderThickness="1"
+                    Command="{Binding CloseButtonCommand}"/>
+            <Button Content="CLEAR" FontFamily="Agency FB" FontSize="30" Width="400"
+                    BorderBrush="Black" BorderThickness="1"
+                    Command="{Binding ClearButtonCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>
