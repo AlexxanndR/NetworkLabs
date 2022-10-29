@@ -113,8 +113,8 @@ namespace COM_Ports_CRC.MVVM.ViewModel
             {
                 return new RelayCommand(click =>
                 {
-                    if (Regex.IsMatch(HexSendMessage, @"^[a-f0-9]+$"))
-                        BinSendMessage = HexSendMessage.HexToBin();
+                    if (!String.IsNullOrEmpty(HexSendMessage) && Regex.IsMatch(HexSendMessage, @"^[a-f0-9]+$"))
+                        BinSendMessage = HexSendMessage.HexToShortBin();
                 });
             }
         }
@@ -127,17 +127,21 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 {
                     try
                     {
-                        if (ErrorsNum <= Convert.ToInt32(_serialPorts.PackageLength) * 8)
+                        if (String.IsNullOrEmpty(HexSendMessage))
+                            throw new Exception("The package has not been sent yet.");
+
+                        if (ErrorsNum <= Convert.ToInt32(_serialPorts.PackageLength, 16) * 8)
                         {
                             Random rd = new Random();
+                            string fullBinSendMessage = HexSendMessage.HexToFullBin();
 
                             for (int i = 0; i < ErrorsNum; i++)
                             {
-                                int errorPos = rd.Next(0, ErrorsNum - 1);
-                                var dataField = BinSendMessage.Replace(" ", String.Empty).Substring(4 * 8, 16);
-                                ErrorSendMessage = new string (dataField.Select((x, j) => j != errorPos ? x : (x == '0' ? '1' : '0')).ToArray());
+                                int errorPos = rd.Next(32, 47);
+                                fullBinSendMessage = new string (fullBinSendMessage.Select((c, j) => j == errorPos ? (c == '0' ? '1' : '0') : c).ToArray());
+                                ErrorSendMessage = fullBinSendMessage.BinToHex();
                             }
-                        }
+                        } 
                         else
                             throw new Exception("Too many errors. Should be no more than 16.");
                     }
@@ -157,13 +161,20 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 {
                     try
                     {
-                        if (ErrorsNum == 0)
-                            _serialPorts.SendPackage(HexSendMessage);
-                        else {
-                            _serialPorts.SendPackage(ErrorSendMessage);
-                            ErrorsNum = 0;
-                        }                      
+                        CRC = CheckSum.CRC(HexSendMessage, 8);
+
+                        if (String.IsNullOrEmpty(ErrorSendMessage))
+                            _serialPorts.SendPackage(HexSendMessage, CRC);
+                        else
+                            _serialPorts.SendPackage(ErrorSendMessage, CRC);
+                        
                         HexReceivedMessage = _serialPorts.ReceivedData;
+                        BinReceivedMessage = HexReceivedMessage.HexToShortBin();
+
+                        string receivedCRC = CheckSum.CRC(HexReceivedMessage, 8);
+                        
+                        if (CRC != receivedCRC)
+                            throw new Exception("The hash didn't match.");
                     }
                     catch (Exception ex)
                     {
@@ -218,6 +229,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 return new RelayCommand(click =>
                 {
                     HexSendMessage = BinSendMessage = HexReceivedMessage = BinReceivedMessage = String.Empty;
+                    ErrorsNum = 0;
                     Logs = Logs.AppendLine("Windows were cleared.");
                 });
             }

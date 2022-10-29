@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COM_Ports_CRC.Helpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -113,7 +114,7 @@ namespace COM_Ports_CRC.Core
             }
         }
 
-        public void SendPackage(string package)
+        public void SendPackage(string package, string binCRC)
         {
             if (_serialPort1.IsOpen == false || _serialPort2.IsOpen == false)
                 throw new Exception("The ports are not open yet.");
@@ -127,9 +128,9 @@ namespace COM_Ports_CRC.Core
                 throw new Exception(ex.Message + "\nInput example: " + PackageExample);
             }
 
-
-
+            package += binCRC.BinToHex();
             _serialPort1.Write(package);
+
             Thread.Sleep(50);
         }
     }
