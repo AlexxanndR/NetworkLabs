@@ -9,21 +9,12 @@ namespace COM_Ports_CRC.Helpers
 {
     public static class MessageHelper
     {
-        public static string HexToFullBin(this string message)
+        public static string HexToBin(this string message)
         {
             var binMessage = Enumerable.Range(0, message.Length / 2)
                                        .Select(i => message.Substring(i * 2, 2))
                                        .Select(i => Convert.ToByte(i, 16))
                                        .Select(i => Convert.ToString(i, 2).PadLeft(8, '0'))
-                                       .ToArray();
-            return String.Join(String.Empty, binMessage);
-        }
-        public static string HexToShortBin(this string message)
-        {
-            var binMessage = Enumerable.Range(0, message.Length / 2)
-                                       .Select(i => message.Substring(i * 2, 2))
-                                       .Select(i => Convert.ToByte(i, 16))
-                                       .Select(i => Convert.ToString(i, 2))
                                        .ToArray();
             return String.Join(String.Empty, binMessage);
         }
@@ -38,10 +29,10 @@ namespace COM_Ports_CRC.Helpers
 
         public static List<byte> HexToBitList(this string message)
         {
-            var binMessage = Enumerable.Range(0, message.Length / 2)
-                                       .Select(i => message.Substring(i * 2, 2))
+            var binMessage = Enumerable.Range(0, message.Length % 2 == 0 ? message.Length / 2 : (message.Length / 2) + 1)
+                                       .Select(i => message.PadLeft(2, '0').Substring(i * 2, 2))
                                        .Select(i => Convert.ToByte(i, 16))
-                                       .Select(i => Convert.ToString(i, 2))
+                                       .Select(i => Convert.ToString(i, 2).PadLeft(8, '0'))
                                        .ToArray();
             return String.Join(String.Empty, binMessage).Select(i => i == '1' ? (byte)1 : (byte)0).ToList();
         }

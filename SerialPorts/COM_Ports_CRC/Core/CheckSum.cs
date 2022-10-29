@@ -11,7 +11,7 @@ namespace COM_Ports_CRC.Core
     {
         public static Dictionary<int, string> StandartPolynoms = new Dictionary<int, string>()
         {
-            {4, "0C"}, {8, "AB"}, {16, "A001"}
+            {4, "C"}, {8, "9B"}, {16, "A001"}
         };
 
         public static string CRC(string message, int degree)
@@ -22,16 +22,20 @@ namespace COM_Ports_CRC.Core
             List<byte> polynom = StandartPolynoms[degree].HexToBitList();
             List<byte> crc = message.HexToBitList();
 
-            while (crc.Count > polynom.Count)
+            for (int i = 0; crc.Count > polynom.Count; i = 0)
             {
-                for (int i = 0; i < crc.Count && i < polynom.Count; i++)
+                if (crc[i] == 0) 
                 {
-                    if (crc[i] == 0)
-                        crc.RemoveAt(i);
-                    else
-                        crc[i] = (byte)(crc[i] ^ polynom[i]);              
+                    crc.RemoveAt(i);
+                    continue;
+                }
+                while (i < polynom.Count)
+                {
+                    crc[i] = (byte)(crc[i] ^ polynom[i]);
+                    i++;
                 }
             }
+
 
             return String.Join(String.Empty, crc);
         }

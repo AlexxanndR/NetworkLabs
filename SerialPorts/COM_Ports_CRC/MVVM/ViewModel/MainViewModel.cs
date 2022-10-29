@@ -114,7 +114,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 return new RelayCommand(click =>
                 {
                     if (!String.IsNullOrEmpty(HexSendMessage) && Regex.IsMatch(HexSendMessage, @"^[a-f0-9]+$"))
-                        BinSendMessage = HexSendMessage.HexToShortBin();
+                        BinSendMessage = HexSendMessage.HexToBin();
                 });
             }
         }
@@ -133,7 +133,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                         if (ErrorsNum <= Convert.ToInt32(_serialPorts.PackageLength, 16) * 8)
                         {
                             Random rd = new Random();
-                            string fullBinSendMessage = HexSendMessage.HexToFullBin();
+                            string fullBinSendMessage = HexSendMessage.HexToBin();
 
                             for (int i = 0; i < ErrorsNum; i++)
                             {
@@ -169,7 +169,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                             _serialPorts.SendPackage(ErrorSendMessage, CRC);
                         
                         HexReceivedMessage = _serialPorts.ReceivedData;
-                        BinReceivedMessage = HexReceivedMessage.HexToShortBin();
+                        BinReceivedMessage = HexReceivedMessage.HexToBin();
 
                         string receivedCRC = CheckSum.CRC(HexReceivedMessage, 8);
                         
@@ -238,6 +238,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
 
         public MainViewModel()
         {
+            var s = CheckSum.CRC("0b0203040506", 8);
             _logs = new StringBuilder();
             _serialPorts = new COM("COM1", "COM2");
         }
