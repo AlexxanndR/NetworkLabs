@@ -36,5 +36,13 @@ namespace COM_Ports_CRC.Helpers
                                        .ToArray();
             return String.Join(String.Empty, binMessage).Select(i => i == '1' ? (byte)1 : (byte)0).ToList();
         }
+
+        public static string GetHumanReadableBin(this string message)
+        {
+            var binMessage = Enumerable.Range(0, message.Length / 8)
+                                       .Select(i => message.Substring(i * 8, 8))
+                                       .ToArray();
+            return String.Join(" ", binMessage);
+        }
     }
 }

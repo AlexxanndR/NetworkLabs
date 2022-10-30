@@ -11,7 +11,7 @@ namespace COM_Ports_CRC.Core
     {
         public static Dictionary<int, string> StandartPolynoms = new Dictionary<int, string>()
         {
-            {4, "C"}, {8, "9B"}, {16, "A001"}
+           {8, "9B"}, {16, "A001"}
         };
 
         public static string CRC(string message, int degree)

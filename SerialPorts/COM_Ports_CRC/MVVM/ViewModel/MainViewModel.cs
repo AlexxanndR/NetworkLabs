@@ -114,7 +114,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 return new RelayCommand(click =>
                 {
                     if (!String.IsNullOrEmpty(HexSendMessage) && Regex.IsMatch(HexSendMessage, @"^[a-f0-9]+$"))
-                        BinSendMessage = HexSendMessage.HexToBin();
+                        BinSendMessage = HexSendMessage.HexToBin().GetHumanReadableBin();
                 });
             }
         }
@@ -144,6 +144,8 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                         } 
                         else
                             throw new Exception("Too many errors. Should be no more than 16.");
+
+                        Logs = Logs.AppendLine(ErrorsNum + " errors were generated.");
                     }
                     catch (Exception ex)
                     {
@@ -161,7 +163,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 {
                     try
                     {
-                        CRC = CheckSum.CRC(HexSendMessage, 8);
+                        CRC = CheckSum.CRC(HexSendMessage,16);
 
                         if (String.IsNullOrEmpty(ErrorSendMessage))
                             _serialPorts.SendPackage(HexSendMessage, CRC);
@@ -169,11 +171,11 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                             _serialPorts.SendPackage(ErrorSendMessage, CRC);
                         
                         HexReceivedMessage = _serialPorts.ReceivedData;
-                        BinReceivedMessage = HexReceivedMessage.HexToBin();
+                        BinReceivedMessage = HexReceivedMessage.HexToBin().GetHumanReadableBin();
 
-                        string receivedCRC = CheckSum.CRC(HexReceivedMessage, 8);
+                        string receivedCRC = CheckSum.CRC(HexReceivedMessage.Substring(0, HexSendMessage.Length), 16);
                         
-                        if (CRC != receivedCRC)
+                        if (receivedCRC != CRC)
                             throw new Exception("The hash didn't match.");
                     }
                     catch (Exception ex)
@@ -228,7 +230,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
             {
                 return new RelayCommand(click =>
                 {
-                    HexSendMessage = BinSendMessage = HexReceivedMessage = BinReceivedMessage = String.Empty;
+                    HexSendMessage = BinSendMessage = HexReceivedMessage = BinReceivedMessage = CRC = String.Empty;
                     ErrorsNum = 0;
                     Logs = Logs.AppendLine("Windows were cleared.");
                 });
@@ -238,7 +240,6 @@ namespace COM_Ports_CRC.MVVM.ViewModel
 
         public MainViewModel()
         {
-            var s = CheckSum.CRC("0b0203040506", 8);
             _logs = new StringBuilder();
             _serialPorts = new COM("COM1", "COM2");
         }
