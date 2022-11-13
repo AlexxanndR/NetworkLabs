@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace COM_Ports_CRC.Helpers
 {
@@ -21,13 +18,13 @@ namespace COM_Ports_CRC.Helpers
 
         public static string BinToHex(this string message)
         {
-            var bytes = Enumerable.Range(0, message.Length % 8 == 0 ? message.Length / 8 : (message.Length / 8) + 1)
+            var bytes = Enumerable.Range(0, (message.Length % 8 == 0) ? message.Length / 8 : (message.Length / 8) + 1)
                                   .Select(i => Convert.ToByte(message.PadLeft(8, '0').Substring(i * 8, 8), 2))
                                   .ToArray();
             return BitConverter.ToString(bytes).Replace("-", String.Empty).ToLower();
         } 
 
-        public static List<byte> HexToBitList(this string message)
+        public static List<byte> HexToBinList(this string message)
         {
             var binMessage = Enumerable.Range(0, message.Length % 2 == 0 ? message.Length / 2 : (message.Length / 2) + 1)
                                        .Select(i => message.PadLeft(2, '0').Substring(i * 2, 2))

@@ -111,7 +111,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
         {
             get
             {
-                return new RelayCommand(click =>
+                return new RelayCommand(lostFocus =>
                 {
                     if (!String.IsNullOrEmpty(HexSendMessage) && Regex.IsMatch(HexSendMessage, @"^[a-f0-9]+$"))
                         BinSendMessage = HexSendMessage.HexToBin().GetHumanReadableBin();
@@ -133,14 +133,14 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                         if (ErrorsNum <= Convert.ToInt32(_serialPorts.PackageLength, 16) * 8)
                         {
                             Random rd = new Random();
-                            string fullBinSendMessage = HexSendMessage.HexToBin();
+                            string binSendMessage = HexSendMessage.HexToBin();
 
                             for (int i = 0; i < ErrorsNum; i++)
                             {
                                 int errorPos = rd.Next(32, 47);
-                                fullBinSendMessage = new string (fullBinSendMessage.Select((c, j) => j == errorPos ? (c == '0' ? '1' : '0') : c).ToArray());
-                                ErrorSendMessage = fullBinSendMessage.BinToHex();
-                            }
+                                binSendMessage = new string (binSendMessage.Select((c, j) => j == errorPos ? (c == '0' ? '1' : '0') : c).ToArray());
+                                ErrorSendMessage = binSendMessage.BinToHex();
+                            }    
                         } 
                         else
                             throw new Exception("Too many errors. Should be no more than 16.");
@@ -163,7 +163,17 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                 {
                     try
                     {
-                        CRC = CheckSum.CRC(HexSendMessage,16);
+
+                        try
+                        {
+                            _serialPorts.CheckPackageCorrectness(HexSendMessage);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(ex.Message + "\nInput example: " + _serialPorts.PackageExample);
+                        }
+
+                        CRC = CheckSum.CRC16(HexSendMessage);
 
                         if (String.IsNullOrEmpty(ErrorSendMessage))
                             _serialPorts.SendPackage(HexSendMessage, CRC);
@@ -173,7 +183,7 @@ namespace COM_Ports_CRC.MVVM.ViewModel
                         HexReceivedMessage = _serialPorts.ReceivedData;
                         BinReceivedMessage = HexReceivedMessage.HexToBin().GetHumanReadableBin();
 
-                        string receivedCRC = CheckSum.CRC(HexReceivedMessage.Substring(0, HexSendMessage.Length), 16);
+                        string receivedCRC = CheckSum.CRC16(HexReceivedMessage.Substring(0, HexSendMessage.Length));
                         
                         if (receivedCRC != CRC)
                             throw new Exception("The hash didn't match.");

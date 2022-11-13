@@ -1,52 +1,30 @@
-﻿using COM_Ports_CRC.Helpers;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace COM_Ports_CRC.Core
+namespace COM_Ports_Collisions.Core
 {
     internal class COM
     {
         private SerialPort _serialPort1;
         private SerialPort _serialPort2;
 
-        private string _packageExample;
-        public string PackageExample
-        {
-            get { return _packageExample; ; }
-            private set { _packageExample = value; }
-        }
-
-        private string _packageFlag;
-        public string PackageFlag
-        {
-            get { return _packageFlag; ; }
-            private set { _packageFlag = value; }
-        }
-
-        private string _packageLength;
-        public string PackageLength
-        {
-            get { return _packageLength; ; }
-            private set { _packageLength = value; }
-        }
-
-        private string _receivedData;
-        public string ReceivedData
-        {
-            get { return _receivedData; }
-            private set { _receivedData = value; }
-        }
+        private const int _collisionWindow = 100;
+        private const int _normalAttemptsNum = 10;
+        public string PackageExample { get; private set; }
+        public string PackageFlag { get; private set; }
+        public string PackageLength { get; private set; }
+        public string ReceivedData { get; private set; }
 
         private void PackageReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
         {
             ReceivedData = _serialPort2.ReadExisting();
         }
 
-        public void CheckPackageCorrectness(string package)
+        private void CheckPackageCorrectness(string package)
         {
             if (String.IsNullOrEmpty(package))
                 throw new Exception("The package is empty.");
@@ -64,6 +42,17 @@ namespace COM_Ports_CRC.Core
                 throw new Exception("The package length is invalid. Should be <" + PackageLength + ">.");
         }
 
+        private bool CheckBusy(uint busyProbability)
+        {
+            Random gen = new Random();
+            return gen.Next(100) <= busyProbability ? true : false;
+        }
+
+        private bool CheckCollision(uint collisionProbability)
+        {
+            Random gen = new Random();
+            return gen.Next(100) <= collisionProbability ? true : false;
+        }
 
         public COM(string firstPortName, string secondPortName)
         {
@@ -109,15 +98,50 @@ namespace COM_Ports_CRC.Core
             }
         }
 
-        public void SendPackage(string package, string binCRC)
+        public string SendPackage(string package, uint collisionProb, uint busyProb)
         {
             if (_serialPort1.IsOpen == false || _serialPort2.IsOpen == false)
                 throw new Exception("The ports are not open yet.");
 
-            package += binCRC.BinToHex();
-            _serialPort1.Write(package);
+            try
+            {
+                CheckPackageCorrectness(package);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\nInput example: " + PackageExample);
+            }
 
-            Thread.Sleep(50);
+            uint attemptNum = 0;
+            StringBuilder report = new StringBuilder("Report:\n");
+
+            while (true)
+            {
+                if (CheckBusy(busyProb))
+                    report.AppendLine("The monochannel is busy.");
+
+                _serialPort1.Write(package);
+
+                Thread.Sleep(_collisionWindow);
+
+                if (CheckCollision(collisionProb))
+                {
+                    attemptNum++;
+                    report.AppendLine("Collision " + attemptNum + " was detected.");
+                    if (attemptNum > _normalAttemptsNum)
+                    {
+                        report.AppendLine("Too many attempts to send a package.");
+                        throw new Exception(report.ToString());
+                    }
+                }
+                else
+                    break;
+
+                Random latency = new Random();
+                Thread.Sleep(latency.Next(100));
+            }
+
+            return report.ToString();
         }
     }
 }

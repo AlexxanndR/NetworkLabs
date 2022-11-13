@@ -24,17 +24,19 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <Border Grid.Column="1"
+                BorderBrush="Black" BorderThickness="1 0 1 0"/>
+
         <Border Grid.Row="1" Grid.ColumnSpan="3"
                 BorderBrush="Black" BorderThickness="1"/>
 
-        <ScrollViewer Grid.Column="0">
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="INPUT"
+        <StackPanel Grid.Column="0" Orientation="Vertical">
+            <TextBlock Text="INPUT"
                            HorizontalAlignment="Center"
                            Background="Transparent" Foreground="Black"
                            FontSize="45" FontFamily="Oswald Medium"/>
+            <ScrollViewer Height="330" Margin="10" VerticalScrollBarVisibility="Auto">
                 <TextBox Text="{Binding SendMessage, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="10"
                          Background="AliceBlue" BorderBrush="Black" BorderThickness="1"
                          FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
                     <i:Interaction.Triggers>
@@ -43,41 +45,44 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBox>
-            </StackPanel>
-        </ScrollViewer>
-        <ScrollViewer Grid.Column="1">
-            <StackPanel Orientation="Vertical" CanVerticallyScroll="True">
-                <TextBlock Text="OUTPUT"
+            </ScrollViewer>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <TextBlock Text="OUTPUT"
                        HorizontalAlignment="Center"
                        Background="Transparent" Foreground="Black"
                        FontSize="45" FontFamily="Oswald Medium"/>
-                <Border BorderBrush="Black" BorderThickness="1"
-                        Margin="10">
+            <Border BorderBrush="Black" BorderThickness="1"
+                    Margin="10">
+                <ScrollViewer Height="330" VerticalScrollBarVisibility="Auto">
                     <TextBlock Text="{Binding ReceivedMessage}"           
-                         Background="AliceBlue"
-                         FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
+                               Background="AliceBlue"
+                               FontSize="30" FontFamily="Courier new" TextWrapping="Wrap">
                     </TextBlock>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
-        <ScrollViewer Grid.Column="2">
-            <StackPanel Orientation="Vertical" CanVerticallyScroll="True">
-                <TextBlock Text="LOGS"
-                           HorizontalAlignment="Center"
-                           Background="Transparent" Foreground="Black"
-                           FontSize="45" FontFamily="Oswald Medium"/>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Vertical">
+            <TextBlock Text="LOGS"
+                       HorizontalAlignment="Center"
+                       Background="Transparent" Foreground="Black"
+                       FontSize="45" FontFamily="Oswald Medium"/>
+            <ScrollViewer Height="340" VerticalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Logs}"
-                           HorizontalAlignment="Left" Margin="10"
-                           Background="Transparent" Foreground="DimGray"
-                           FontSize="20" FontWeight="Light" FontFamily="Oswald" TextWrapping="Wrap"/>
-            </StackPanel>
-        </ScrollViewer>
+                           HorizontalAlignment="Stretch" Margin="10"
+                           Background="Transparent" Foreground="Black"
+                           FontSize="20" FontFamily="Agency FB" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </StackPanel>
+
         <StackPanel Grid.Row="1" Grid.ColumnSpan="3"
                     Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="OPEN" FontSize="30" Width="500"
+            <Button Content="OPEN" FontFamily="Agency FB" FontSize="30" Width="500"
                     BorderBrush="Black" BorderThickness="1"
                     Command="{Binding OpenButtonCommand}"/>
-            <Button Content="CLOSE" FontSize="30" Width="500"
+            <Button Content="CLOSE" FontFamily="Agency FB" FontSize="30" Width="500"
                     BorderBrush="Black" BorderThickness="1"
                     Command="{Binding CloseButtonCommand}"/>
         </StackPanel>
